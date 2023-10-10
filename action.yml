@@ -17,6 +17,10 @@ inputs:
       description: 'Package Name'
       default: ''
       required: true
+  keystore_file:
+      description: 'Keystore File'
+      default: ''
+      required: true
   alias:
       description: 'Secrets Alias'
       default: ''
