@@ -77,7 +77,7 @@ runs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node_version }}  # Adjust this to your desired Node.js version
-
+      
       - name: Inputs Print
         shell: bash
         run: |
@@ -91,7 +91,7 @@ runs:
         shell: bash
         run: |
           echo play_store="$(echo '${{ inputs.play_store_credentials_base64 }}' | base64 --decode | tr -d '\n')" &> /dev/null >> "$GITHUB_ENV"
-
+          
       - uses: actions/cache@v3
         with:
           key: node-dependencies
@@ -115,7 +115,7 @@ runs:
           alias: ${{ inputs.alias }}
           keyStorePassword: ${{ inputs.key_store_password }}
         env:
-          BUILD_TOOLS_VERSION: ${{ inputs.build_tools_version }}
+          BUILD_TOOLS_VERSION: ${{ inputs.build_tools_version }}       
       - uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ steps.credentials.outputs.play_store }}
