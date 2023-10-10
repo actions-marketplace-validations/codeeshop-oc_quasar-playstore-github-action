@@ -1,49 +1,51 @@
-name: 'Test11333'
-description: 'Connect your GitHub Action workflow to Tailscale'
+name: 'Quasar Play Store'
+description: 'Connect your GitHub Action workflow to Play Store'
+author: 'Anant Negi'
 branding:
-  icon: 'arrow-right-circle'
+  icon: 'airplay'
   color: 'gray-dark'
 inputs:
-  authkey:
-    description: 'Your Tailscale authentication key, from the admin panel.'
-    required: false
-    deprecationMessage: 'An OAuth API client https://tailscale.com/s/oauth-clients is recommended instead of an authkey'
-  oauth-client-id:
-    description: 'Your Tailscale OAuth Client ID.'
-    required: false
-  oauth-secret:
-    description: 'Your Tailscale OAuth Client Secret.'
-    required: false
-  tags:
-    description: 'Comma separated list of Tags to be applied to nodes. The OAuth client must have permission to apply these tags.'
-    required: false
-  version:
-    description: 'Tailscale version to use.'
-    required: true
-    default: '1.42.0'
-  sha256sum:
-    description: 'Expected SHA256 checksum of the tarball.'
-    required: false
-    default: ''
-  args:
-    description: 'Optional additional arguments to `tailscale up`'
-    required: false
-    default: ''
-  tailscaled-args:
-    description: 'Optional additional arguments to `tailscaled`'
-    required: false
-    default: ''
-  hostname:
-    description: 'Fixed hostname to use.'
-    required: false
-    default: ''
+  play_store_credentials:
+      description: 'Play Store Credentials'
+      default: ''
+      required: true
+  app_version:
+      description: 'App Version'
+      default: ''
+      required: true
+    package_name:
+      description: 'Package Name'
+      default: ''
+      required: true
+    alias:
+      description: 'Secrets Alias'
+      default: ''
+      required: true
+    key_store_password:
+      description: 'Secrets Key Store Password'
+      default: ''
+      required: true
+    app_track:
+      description: 'App Track'
+      default: 'internal'
+      required: true
+    build_tools_version:
+      description: 'Build Tools Version'
+      default: '33.0.2'
+      required: true
+    node_version:
+      description: 'Node Version'
+      default: '18'
+      required: true
+env:
+  APP_VERSION: ""
+  KEYSTORE_BASE64: ""  
 runs:
     using: 'composite'
     steps:
-      - name: Check Runner OS
-        if: ${{ runner.os != 'Linux' }}
+      - uses: actions/checkout@v3
+      - name: Generate Base64 Release Key
         shell: bash
         run: |
-          echo "::error title=⛔ error hint::Support Linux Only"
-          exit 1
-          
+          echo "KEYSTORE_BASE64=$(openssl base64 < ${{ inputs.keystore_file }} | tr -d '\n')" >> "$GITHUB_OUTPUT"
+      
