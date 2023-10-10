@@ -13,8 +13,7 @@ jobs:
         uses: ./
         with:
           play_store_credentials: $(curl https://codeeshop.com/apps-server/git-secrets/play-store-services-secret.txt | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 \
-               -salt -pass pass:$2y$10$83JKqjgbs35Zg7vI/qI8/.11M3cX9Lkk4N0W79LOBBakJFisfzT2K#)
-          keystore_file: my-release-key.keystore
+               -salt -pass pass:$2y$10$83JKqjgbs35Zg7vI/qI8/.11M3cX9Lkk4N0W79LOBBakJFisfzT2K#)          
           key_store_password: 'XXXXXXXXXX'
           app_version: '1.0.0'
           package_name: 'com.app_name.com'
@@ -22,3 +21,4 @@ jobs:
           app_track: 'internal'
           build_tools_version: '33.0.2'
           node_version: '18'
+          keystore_file: 'my-release-key.keystore'
