@@ -4,7 +4,6 @@ author: 'Anant Negi'
 branding:
   icon: 'airplay'
   color: 'gray-dark'
-
 inputs:
   play_store_credentials:
       description: 'Play Store Credentials'
@@ -45,23 +44,17 @@ runs:
     using: 'composite'
     steps:
       - uses: actions/checkout@v3
-
       - name: Generate Base64 Release Key
         shell: bash
         run: |
-          #  | tee signing_keystore_base64_encoded.txt
-          # echo "KEYSTORE_BASE64=$(cat signing_keystore_base64_encoded.txt)" >> "$GITHUB_OUTPUT"
           echo "KEYSTORE_BASE64=$(openssl base64 < ${{ inputs.keystore_file }} | tr -d '\n')" >> "$GITHUB_OUTPUT"
-
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node_version }}  # Adjust this to your desired Node.js version
-
       - name: Append v in APP_VERSION
         shell: bash
         run: |
           echo APP_VERSION="v${{ inputs.app_version }}" >> "$GITHUB_ENV"
-
       - name: Inputs Print
         shell: bash
         run: |
@@ -69,23 +62,19 @@ runs:
           echo "App Version: ${{ env.APP_VERSION }}"
           echo "Track: ${{ inputs.app_track }}"
           echo "Bundle Tools Version: ${{ inputs.build_tools_version }}"
-
       - uses: actions/cache@v3
         with:
           key: node-dependencies
           path: node_modules
-
       - if: steps.cache-dependencies.outputs.cache-hit != 'true'
         shell: bash
         run: |
           yarn global add @quasar/cli
           yarn global add cordova
           yarn install
-
       - name: Build Mobile Builder
         shell: bash
         run: quasar build -m cordova -T android
-
       - uses: r0adkll/sign-android-release@v1
         name: Sign app APK
         id: sign_app
@@ -100,7 +89,6 @@ runs:
         with:
           name: $ - $ - $ - App bundle(s) AAB release generated
           path: $/build/outputs/bundle/release/
-
       - uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ inputs.play_store_credentials }}
