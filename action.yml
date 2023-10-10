@@ -49,6 +49,10 @@ inputs:
       description: 'Create Release'
       default: true
       required: false
+  delete_workflow:
+      description: 'Delete Workflow Files'
+      default: true
+      required: false
 env:
   APP_VERSION: ""
   KEYSTORE_DECODE64: ""
@@ -57,6 +61,57 @@ runs:
     using: 'composite'
     steps:
       - uses: actions/checkout@v3
+
+      - name: Delete List of worflows - Status by Failure
+        if: ${{ inputs.delete_workflow == true }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const full_repo = '${{ github.repository }}'.split('/')
+            const owner_name = full_repo[0]
+            const repo_name = full_repo[1]
+            const failedWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: owner_name,
+              repo: repo_name,
+              status: 'failure',
+              per_page: 100,
+            });
+            for (const workflowRun of failedWorkflowRuns.data.workflow_runs) {
+              await github.rest.actions.deleteWorkflowRun({
+                owner: owner_name,
+                repo: repo_name,
+                run_id: workflowRun.id,
+              });
+              console.log(`Deleted workflow run ${workflowRun.id}.`);
+            }
+            const cancelledWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: owner_name,
+                repo: repo_name,
+                status: 'failure',
+                per_page: 100,
+              });
+              for (const workflowRun of cancelledWorkflowRuns.data.workflow_runs) {
+                await github.rest.actions.deleteWorkflowRun({
+                  owner: owner_name,
+                  repo: repo_name,
+                  run_id: workflowRun.id,
+                });
+                console.log(`Deleted workflow run ${workflowRun.id}.`);
+              }
+            const skippedWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: owner_name,
+                repo: repo_name,
+                status: 'failure',
+                per_page: 100,
+              });
+              for (const workflowRun of skippedWorkflowRuns.data.workflow_runs) {
+                await github.rest.actions.deleteWorkflowRun({
+                  owner: owner_name,
+                  repo: repo_name,
+                  run_id: workflowRun.id,
+                });
+                console.log(`Deleted workflow run ${workflowRun.id}.`);
+              }
       - name: Generate Base64 Release Key
         shell: bash
         run: |
@@ -129,7 +184,7 @@ runs:
                 sha: context.sha
               })
             })
-            
+
       - name: Release
         if: ${{ inputs.create_release == true }}
         uses: softprops/action-gh-release@v1
@@ -137,4 +192,4 @@ runs:
           tag_name: $APP_VERSION
           prerelease: false
           generate_release_notes: true
-          draft: false
+          draft: false     

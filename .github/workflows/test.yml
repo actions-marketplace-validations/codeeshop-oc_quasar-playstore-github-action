@@ -25,4 +25,5 @@ jobs:
           node_version: '18'
           create_release_tags: false
           create_release: false
+          delete_workflow: false
 

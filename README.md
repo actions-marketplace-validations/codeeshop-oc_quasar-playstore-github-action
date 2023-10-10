@@ -71,9 +71,14 @@ node_version
 ### 10. `create_release_tags`
 #### Required: NO
 #### Default: true
-node_version
+create_release_tags
 
 ### 11. `create_release`
 #### Required: NO
 #### Default: true
-node_version
+create_release
+
+### 11. `delete_workflow`
+#### Required: NO
+#### Default: true
+delete_workflow
