@@ -14,7 +14,7 @@ jobs:
         uses: codeeshop-oc/quasar-playstore-github-action@1.0.4
         
         with:
-          play_store_credentials: play-store-services.secret
+          play_store_credentials_base64: play-store-services.secret
           keystore_base64: my-release-key.keystore
           key_store_password: 'XXXXXXXXXX'
           app_version: '1.0.0'

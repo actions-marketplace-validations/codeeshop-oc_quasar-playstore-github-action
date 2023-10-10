@@ -7,7 +7,7 @@ by adding a step to your workflow.
   - name: Quasar Play Store
     uses: codeeshop-oc/quasar-playstore-github-action@v2
     with:
-      play_store_credentials: play-store-services.secret
+      play_store_credentials_base64: play-store-services.secret
       keystore_base64: my-release-key.keystore
       key_store_password: 'XXXXXXXXXX'
       app_version: '1.0.0'
@@ -24,7 +24,7 @@ by adding a step to your workflow.
 Subsequent steps in the Action can then access your github repo for quasar code.
 
 ## Inputs
-### 1. `play_store_credentials`
+### 1. `play_store_credentials_base64`
 #### Required: YES
 #### Default: ''
 keystore_file
@@ -79,7 +79,7 @@ create_release_tags
 #### Default: true
 create_release
 
-### 11. `delete_workflow`
+### 12. `delete_workflow`
 #### Required: NO
 #### Default: true
 delete_workflow

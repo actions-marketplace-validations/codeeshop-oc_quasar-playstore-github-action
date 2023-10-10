@@ -5,7 +5,7 @@ branding:
   icon: 'airplay'
   color: 'gray-dark'
 inputs:
-  play_store_credentials:
+  play_store_credentials_base64:
       description: 'Play Store Credentials Base Encoded'
       default: ''
       required: true
