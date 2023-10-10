@@ -3,6 +3,11 @@ description: 'Connect your GitHub Action workflow to Play Store'
 branding:
   icon: 'airplay'
   color: 'gray-dark'
+inputs:
+  play_store_credentials:
+      description: 'Play Store Credentials'
+      default: ''
+      required: true
 runs:
     steps:
       - name: Check Runner OS
