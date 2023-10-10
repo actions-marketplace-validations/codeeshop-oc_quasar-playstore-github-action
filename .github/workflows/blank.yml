@@ -5,19 +5,20 @@ on:
 
 jobs:          
   build:
-   - name: Check out code
-     uses: actions/checkout@v3
-      
-   - name: Quasar Play Store
-     uses: ./
-     with:
-        play_store_credentials: $(curl https://codeeshop.com/apps-server/git-secrets/play-store-services-secret.txt | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 \
-             -salt -pass pass:$2y$10$83JKqjgbs35Zg7vI/qI8/.11M3cX9Lkk4N0W79LOBBakJFisfzT2K#)
-        keystore_file: my-release-key.keystore
-        key_store_password: 'XXXXXXXXXX'
-        app_version: '1.0.0'
-        package_name: 'com.app_name.com'
-        alias: 'alias_name'
-        app_track: 'internal'
-        build_tools_version: '33.0.2'
-        node_version: '18'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        
+      - name: Quasar Play Store
+        uses: ./
+        with:
+          play_store_credentials: $(curl https://codeeshop.com/apps-server/git-secrets/play-store-services-secret.txt | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 \
+               -salt -pass pass:$2y$10$83JKqjgbs35Zg7vI/qI8/.11M3cX9Lkk4N0W79LOBBakJFisfzT2K#)
+          keystore_file: my-release-key.keystore
+          key_store_password: 'XXXXXXXXXX'
+          app_version: '1.0.0'
+          package_name: 'com.app_name.com'
+          alias: 'alias_name'
+          app_track: 'internal'
+          build_tools_version: '33.0.2'
+          node_version: '18'
