@@ -18,6 +18,7 @@ by adding a step to your workflow.
       node_version: '18'
       create_release_tags: false
       create_release: false
+      delete_workflow: false
 ```
 
 Subsequent steps in the Action can then access your github repo for quasar code.
