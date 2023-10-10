@@ -38,10 +38,9 @@ inputs:
       description: 'Node Version'
       default: '18'
       required: true
-
 env:
   APP_VERSION: ""
-  KEYSTORE_BASE64: ""
+  KEYSTORE_BASE64: ""  
 runs:
     using: 'composite'
     steps:
@@ -97,7 +96,6 @@ runs:
           keyStorePassword: ${{ inputs.key_store_password }}
         env:
           BUILD_TOOLS_VERSION: ${{ inputs.build_tools_version }}
-
       - uses: actions/upload-artifact@v3
         with:
           name: $ - $ - $ - App bundle(s) AAB release generated
