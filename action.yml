@@ -1,7 +1,4 @@
-# Copyright (c) Tailscale Inc & AUTHORS
-# SPDX-License-Identifier: BSD-3-Clause
-#
-name: 'Test11'
+name: 'Test11333'
 description: 'Connect your GitHub Action workflow to Tailscale'
 branding:
   icon: 'arrow-right-circle'
