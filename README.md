@@ -1,28 +1,67 @@
-# Tailscale GitHub Action
+# Quasar Play Store GitHub Action
 
-This GitHub Action connects to your [Tailscale network](https://tailscale.com)
+This GitHub Action connects to your [Play Store](https://play.google.com/console/u/0/developers)
 by adding a step to your workflow.
 
 ```yaml
-  - name: Tailscale
-    uses: tailscale/github-action@v2
+  - name: Quasar Play Store
+    uses: codeeshop-oc/quasar-playstore-github-action@v2
     with:
-      oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-      oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-      tags: tag:ci
+      play_store_credentials: play-store-services.secret
+      keystore_file: my-release-key.keystore
+      key_store_password: 'XXXXXXXXXX'
+      app_version: '1.0.0'
+      package_name: 'com.app_name.com',
+      alias: 'alias_name'
+      app_track: 'internal'
+      build_tools_version: '33.0.2'
+      node_version: '18'
 ```
 
-Subsequent steps in the Action can then access nodes in your Tailnet.
+Subsequent steps in the Action can then access your github repo for quasar code.
 
-oauth-client-id and oauth-secret are an [OAuth client](https://tailscale.com/s/oauth-clients/)
-for the tailnet to be accessed. We recommend storing these as
-[GitHub Encrypted Secrets.](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+## Inputs
+### 1. `play_store_credentials`
+#### Required: YES
+#### Default: ''
+keystore_file
 
-tags is a comma-separated list of one or more [ACL Tags](https://tailscale.com/kb/1068/acl-tags/)
-for the node. At least one tag is required: an OAuth client is not associated
-with any of the Users on the tailnet, it has to Tag its nodes.
+### 2. `keystore_file`
+#### Required: YES
+#### Default: ''
+keystore_file
 
-Nodes created by this Action are [marked as Ephemeral](https://tailscale.com/s/ephemeral-nodes) to
-be automatically removed by the coordination server a short time after they
-finish their run. The nodes are also [marked Preapproved](https://tailscale.com/kb/1085/auth-keys/)
-on tailnets which use [Device Approval](https://tailscale.com/kb/1099/device-approval/)
+### 3. `key_store_password`
+#### Required: YES
+#### Default: ''
+key_store_password
+
+### 4. `app_version`
+#### Required: YES
+#### Default: ''
+app_version
+
+### 5. `package_name`
+#### Required: YES
+#### Default: ''
+package_name
+
+### 6. `alias`
+#### Required: YES
+#### Default: 'alias'
+alias
+
+### 7. `app_track`
+#### Required: NO
+#### Default: 'internal'
+app_track
+
+### 8. `build_tools_version`
+#### Required: NO
+#### Default: '33.0.2'
+build_tools_version
+
+### 9. `node_version`
+#### Required: NO
+#### Default: '18'
+node_version
