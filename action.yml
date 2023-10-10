@@ -1,6 +1,5 @@
 name: 'Quasar Play Store'
 description: 'Connect your GitHub Action workflow to Play Store'
-author: 'Anant Negi'
 branding:
   icon: 'airplay'
   color: 'gray-dark'
