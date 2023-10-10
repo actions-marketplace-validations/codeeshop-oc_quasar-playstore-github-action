@@ -39,7 +39,7 @@ inputs:
       required: true
 env:
   APP_VERSION: ""
-  KEYSTORE_BASE64: ""  
+  KEYSTORE_BASE64: ""
 runs:
     using: 'composite'
     steps:
