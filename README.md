@@ -8,7 +8,7 @@ by adding a step to your workflow.
     uses: codeeshop-oc/quasar-playstore-github-action@v2
     with:
       play_store_credentials: play-store-services.secret
-      keystore_file: my-release-key.keystore
+      keystore_base64: my-release-key.keystore
       key_store_password: 'XXXXXXXXXX'
       app_version: '1.0.0'
       package_name: 'com.app_name.com'
@@ -28,7 +28,7 @@ Subsequent steps in the Action can then access your github repo for quasar code.
 #### Default: ''
 keystore_file
 
-### 2. `keystore_file`
+### 2. `keystore_base64`
 #### Required: YES
 #### Default: ''
 keystore_file
