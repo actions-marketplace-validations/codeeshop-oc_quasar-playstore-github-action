@@ -41,6 +41,14 @@ inputs:
       description: 'Node Version'
       default: '18'
       required: true
+  create_release_tags:
+      description: 'Create Release Tags'
+      default: true
+      required: false
+  create_release:
+      description: 'Create Release'
+      default: true
+      required: false
 env:
   APP_VERSION: ""
   KEYSTORE_DECODE64: ""
@@ -103,3 +111,30 @@ runs:
           releaseName: ${{ env.APP_VERSION }}
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
           debugSymbols: src-cordova/platforms/android/app/build/intermediates/merged_native_libs/release/out/lib
+
+      - name: Create tags
+        if: ${{ inputs.create_release_tags == true }}
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const tags = [
+              $APP_VERSION
+            ];
+
+            tags.forEach((tag) => {
+              github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${tag}`,
+                sha: context.sha
+              })
+            })
+            
+      - name: Release
+        if: ${{ inputs.create_release == true }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: $APP_VERSION
+          prerelease: false
+          generate_release_notes: true
+          draft: false
