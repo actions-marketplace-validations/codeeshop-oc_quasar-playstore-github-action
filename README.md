@@ -11,11 +11,13 @@ by adding a step to your workflow.
       keystore_file: my-release-key.keystore
       key_store_password: 'XXXXXXXXXX'
       app_version: '1.0.0'
-      package_name: 'com.app_name.com',
+      package_name: 'com.app_name.com'
       alias: 'alias_name'
       app_track: 'internal'
       build_tools_version: '33.0.2'
       node_version: '18'
+      create_release_tags: false
+      create_release: false
 ```
 
 Subsequent steps in the Action can then access your github repo for quasar code.
