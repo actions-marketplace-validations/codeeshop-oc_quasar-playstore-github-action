@@ -66,12 +66,12 @@ build_tools_version
 #### Default: '18'
 node_version
 
-### 9. `create_release_tags`
+### 10. `create_release_tags`
 #### Required: NO
 #### Default: true
 node_version
 
-### 9. `create_release`
+### 11. `create_release`
 #### Required: NO
 #### Default: true
 node_version
