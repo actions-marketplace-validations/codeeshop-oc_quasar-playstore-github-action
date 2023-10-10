@@ -53,84 +53,45 @@ inputs:
       description: 'Delete Workflow Files'
       default: true
       required: false
-env:
-  APP_VERSION: ""
-  KEYSTORE_DECODE64: ""
-  PLAY_STORE_CREDENTIALS: ""
 runs:
     using: 'composite'
     steps:
       - uses: actions/checkout@v3
 
-      - name: Delete List of worflows - Status by Failure
-        if: ${{ inputs.delete_workflow == true }}
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const full_repo = '${{ github.repository }}'.split('/')
-            const owner_name = full_repo[0]
-            const repo_name = full_repo[1]
-            const failedWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
-              owner: owner_name,
-              repo: repo_name,
-              status: 'failure',
-              per_page: 100,
-            });
-            for (const workflowRun of failedWorkflowRuns.data.workflow_runs) {
-              await github.rest.actions.deleteWorkflowRun({
-                owner: owner_name,
-                repo: repo_name,
-                run_id: workflowRun.id,
-              });
-              console.log(`Deleted workflow run ${workflowRun.id}.`);
-            }
-            const cancelledWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
-                owner: owner_name,
-                repo: repo_name,
-                status: 'failure',
-                per_page: 100,
-              });
-              for (const workflowRun of cancelledWorkflowRuns.data.workflow_runs) {
-                await github.rest.actions.deleteWorkflowRun({
-                  owner: owner_name,
-                  repo: repo_name,
-                  run_id: workflowRun.id,
-                });
-                console.log(`Deleted workflow run ${workflowRun.id}.`);
-              }
-            const skippedWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
-                owner: owner_name,
-                repo: repo_name,
-                status: 'failure',
-                per_page: 100,
-              });
-              for (const workflowRun of skippedWorkflowRuns.data.workflow_runs) {
-                await github.rest.actions.deleteWorkflowRun({
-                  owner: owner_name,
-                  repo: repo_name,
-                  run_id: workflowRun.id,
-                });
-                console.log(`Deleted workflow run ${workflowRun.id}.`);
-              }
-      - name: Generate Base64 Release Key
+      - name: Generate APP_VERSION Release Key
         shell: bash
         run: |
-          echo "PLAY_STORE_CREDENTIALS=$(${{ inputs.play_store_credentials }} | base64 --decode | tr -d '\n')" >> "$GITHUB_OUTPUT"
+          # echo "play_store_credentials_base64: ${{ inputs.play_store_credentials_base64 }}"
+          # echo "app_version: ${{ inputs.app_version }}"
+          # echo "package_name: ${{ inputs.package_name }}"
+          # echo "keystore_base64: ${{ inputs.keystore_base64 }}"
+          # echo "alias: ${{ inputs.alias }}"
+          # echo "key_store_password: ${{ inputs.key_store_password }}"
+          # echo "app_track: ${{ inputs.app_track }}"
+          # echo "build_tools_version: ${{ inputs.build_tools_version }}"
+          # echo "node_version: ${{ inputs.node_version }}"
+          # echo "create_release_tags: ${{ inputs.create_release_tags }}"
+          # echo "create_release: ${{ inputs.create_release }}"
+          # echo "delete_workflow: ${{ inputs.delete_workflow }}"
 
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node_version }}  # Adjust this to your desired Node.js version
-      - name: Append v in APP_VERSION
-        shell: bash
-        run: |
-          echo APP_VERSION="v${{ inputs.app_version }}" >> "$GITHUB_ENV"
+
       - name: Inputs Print
         shell: bash
         run: |
           echo "Package Name: ${{ inputs.package_name }}"
-          echo "App Version: ${{ env.APP_VERSION }}"
+          echo "App Version: ${{ inputs.app_version }}"
           echo "Track: ${{ inputs.app_track }}"
           echo "Bundle Tools Version: ${{ inputs.build_tools_version }}"
+
+      - name: Credentials
+        id: credentials
+        shell: bash
+        run: |
+          echo play_store="$(echo '${{ inputs.play_store_credentials_base64 }}' | base64 --decode | tr -d '\n')" &> /dev/null >> "$GITHUB_ENV"
+
       - uses: actions/cache@v3
         with:
           key: node-dependencies
@@ -141,6 +102,7 @@ runs:
           yarn global add @quasar/cli
           yarn global add cordova
           yarn install
+
       - name: Build Mobile Builder
         shell: bash
         run: quasar build -m cordova -T android
@@ -154,16 +116,12 @@ runs:
           keyStorePassword: ${{ inputs.key_store_password }}
         env:
           BUILD_TOOLS_VERSION: ${{ inputs.build_tools_version }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: $ - $ - $ - App bundle(s) AAB release generated
-          path: $/build/outputs/bundle/release/
       - uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: $PLAY_STORE_CREDENTIALS
+          serviceAccountJsonPlainText: ${{ steps.credentials.outputs.play_store }}
           track: ${{ inputs.app_track }}
           packageName: ${{ inputs.package_name }}
-          releaseName: ${{ env.APP_VERSION }}
+          releaseName: ${{ inputs.app_version }}
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
           debugSymbols: src-cordova/platforms/android/app/build/intermediates/merged_native_libs/release/out/lib
 
@@ -173,7 +131,7 @@ runs:
         with:
           script: |
             const tags = [
-              $APP_VERSION
+              ${{ inputs.app_version }}
             ];
 
             tags.forEach((tag) => {
@@ -189,7 +147,7 @@ runs:
         if: ${{ inputs.create_release == true }}
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: $APP_VERSION
+          tag_name: ${{ inputs.app_version }}
           prerelease: false
           generate_release_notes: true
-          draft: false     
+          draft: false
